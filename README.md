@@ -22,7 +22,7 @@ Leaf router is the core routing engine which powers the Leaf PHP framework. Leaf
 You can easily install Leaf using [Composer](https://getcomposer.org/).
 
 ```bash
-composer require leafs/bareui
+composer require leafs/router
 ```
 
 ## Basic Usage
