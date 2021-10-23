@@ -1,12 +1,13 @@
 <!-- markdownlint-disable no-inline-html -->
+<!-- markdownlint-disable no-inline-html -->
 <p align="center">
   <br><br>
-  <img src="https://leaf-docs.netlify.app/images/logo.png" height="100"/>
-  <h1 align="center">Leaf Router</h1>
+  <img src="https://leafphp.netlify.app/assets/img/leaf3-logo.png" height="100"/>
+  <h1 align="center">Leaf Router Module</h1>
   <br><br>
 </p>
 
-# Leaf Router (Module)
+# Leaf Router
 
 [![Latest Stable Version](https://poser.pugx.org/leafs/router/v/stable)](https://packagist.org/packages/leafs/router)
 [![Total Downloads](https://poser.pugx.org/leafs/router/downloads)](https://packagist.org/packages/leafs/router)
@@ -18,52 +19,61 @@ Leaf router is the core routing engine which powers the Leaf PHP framework. Leaf
 
 ## Installation
 
-You can easily install Leaf router using [Composer](https://getcomposer.org/).
+You can easily install Leaf using [Composer](https://getcomposer.org/).
 
 ```bash
-composer require leafs/leaf
+composer require leafs/bareui
 ```
-
-This will install Leaf in your project directory.
 
 ## Basic Usage
 
-This is a simple demonstration of Leaf's simplicity.
-After [installing](#installation) Leaf, create an _index.php_ file.
+If you are using leaf router with Leaf, you can build your leaf apps just as you've always done:
 
 ```php
 <?php
 require __DIR__ . "vendor/autoload.php";
 
-$app = new Leaf\App;
-$auth = new Leaf\Auth;
-
-$auth->connect("host", "user", "pass", "db name");
-
-// Base example
-$app->get("/", function() use($app) {
-  $app->response()->json([
+// GET example
+app()->get("/", function () {
+  response()->json([
     "message" => "Welcome!"
   ]);
 });
 
-// Full login example
-$app->post("/auth/login", function() use($app, $auth) {
-  $credentials = $app->request()->get(["username", "password"]);
-
-  $user = $auth->login("users", $credentials, [
-    "username" => ["username", "max:15"],
-    "password" => ["text", "NoSpaces", "min:8"],
+// MATCH example
+app()->match("GET", "/test", function () {
+  response()->json([
+    "message" => "Test!"
   ]);
-
-  if (!$user) {
-    $app->response()->throwErr($auth->errors());
-  }
-
-  $app->response()->json($user);
 });
 
-$app->run();
+app()->run();
+```
+
+If however, you are using leaf router outside of the leaf framework, you simply need to call these methods on the `Leaf\Router` object:
+
+```php
+<?php
+
+use Leaf\Router;
+
+require __DIR__ . "vendor/autoload.php";
+
+// GET example
+Router::get("/", function () {
+  echo json_encode([
+    "message" => "Welcome!"
+  ]);
+});
+
+// MATCH example
+Router::match("GET", "/test", function () {
+  echo json_encode([
+    "message" => "Test!"
+  ]);
+});
+
+Router::run();
 ```
 
 You may quickly test this using the built-in PHP server:
@@ -72,14 +82,6 @@ You may quickly test this using the built-in PHP server:
 php -S localhost:8000
 ```
 
-**You can view the full documentation [here](https://leafphp.netlify.app/#/)**
-
-## Our contributors
-
-And to all our contributors, we love you all ❤️
-
-<a href="https://github.com/leafsphp/leaf/graphs/contributors" target="_blank"><img src="https://opencollective.com/leaf/contributors.svg?width=890" /></a>
-
-## View Leaf's docs [here](https://leafphp.netlify.app/#/)
+## View temporary docs [here](https://www.leafphp.dev/docs/routing/#router-class)
 
 Built with ❤ by [**Mychi Darko**](https://mychi.netlify.app)
