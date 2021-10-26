@@ -162,6 +162,14 @@ class Core
     /**
      * Add a router hook
      * 
+     * Available hooks
+     * - router.before
+     * - router.before.route
+     * - router.before.dispatch
+     * - router.after.dispatch
+     * - router.after.route
+     * - router.after
+     * 
      * @param string $name The hook to set
      * @param callable|null $handler The hook handler
      */
