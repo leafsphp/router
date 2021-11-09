@@ -299,7 +299,7 @@ class Core
             ]);
         }
 
-        if ($config["app.down"]) {
+        if ($config["app.down"] === true) {
             if (!static::$downHandler) {
                 if (class_exists("Leaf\App")) {
                     static::$downHandler = function () {
