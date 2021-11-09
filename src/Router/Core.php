@@ -291,15 +291,15 @@ class Core
     {
         $config = static::$config;
 
-        $mode = _env("APP_ENV") == "false" ? \Leaf\Config::get("mode") : _env("APP_ENV");
-        $debug = _env("APP_DEBUG") == "false" ? \Leaf\Config::get("debug") : _env("APP_DEBUG");
-        $appDown = _env("APP_DOWN") == "false" ? \Leaf\Config::get("app.down") : _env("APP_DOWN");
+        $mode = _env("APP_ENV") ?? \Leaf\Config::get("mode");
+        $debug = _env("APP_DEBUG") ?? \Leaf\Config::get("debug");
+        $appDown = _env("APP_DOWN") ?? \Leaf\Config::get("app.down");
 
         if (class_exists("Leaf\App")) {
             $config = array_merge($config, [
                 "mode" => $mode,
                 "app.down" => $appDown,
-                "debug" => $debug === "false" ? $mode !== "production" : $debug,
+                "debug" => $debug ?? $mode !== "production",
             ]);
         }
 
