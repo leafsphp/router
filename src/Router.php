@@ -32,9 +32,9 @@ class Router extends Core
     }
 
     /**
-     * Set a custom maintainace mode callback.
+     * Set a custom maintenance mode callback.
      *
-     * @param callable $handler The function to be executed
+     * @param callable|null $handler The function to be executed
      */
     public static function setDown(?callable $handler = null)
     {
@@ -50,7 +50,7 @@ class Router extends Core
     public static function mount(string $path, $handler)
     {
         $groupOptions = [
-            "namespace" => null,
+            'namespace' => null,
         ];
 
         list($handler, $groupOptions) = static::mapHandler($handler,
@@ -60,8 +60,8 @@ class Router extends Core
         $namespace = static::$namespace;
         $groupRoute = static::$groupRoute;
 
-        if ($groupOptions["namespace"]) {
-            static::$namespace = $groupOptions["namespace"];
+        if ($groupOptions['namespace']) {
+            static::$namespace = $groupOptions['namespace'];
         }
 
         static::$groupRoute = $path;
@@ -78,7 +78,7 @@ class Router extends Core
      * @param string $path The route sub pattern/path to mount the callbacks on
      * @param callable|array $handler The callback method
      */
-    public static function group($path, $handler)
+    public static function group(string $path, $handler)
     {
         static::mount($path, $handler);
     }
@@ -94,23 +94,23 @@ class Router extends Core
      */
     public static function match(string $methods, string $pattern, $handler)
     {
-        $pattern = static::$groupRoute . "/" . trim($pattern, "/");
-        $pattern = static::$groupRoute ? rtrim($pattern, "/") : $pattern;
+        $pattern = static::$groupRoute . '/' . trim($pattern, '/');
+        $pattern = static::$groupRoute ? rtrim($pattern, '/') : $pattern;
 
         $routeOptions = [
-            "name" => null,
-            "middleware" => null,
-            "namespace" => null,
+            'name' => null,
+            'middleware' => null,
+            'namespace' => null,
         ];
 
         if (is_string($handler)) {
             $namespace = static::$namespace;
 
-            if ($routeOptions["namespace"]) {
-                static::$namespace = $routeOptions["namespace"];
+            if ($routeOptions['namespace']) {
+                static::$namespace = $routeOptions['namespace'];
             }
 
-            $handler = str_replace("\\\\", "\\", static::$namespace . "\\$handler");
+            $handler = str_replace('\\\\', '\\', static::$namespace . '\\$handler');
 
             static::$namespace = $namespace;
         }
@@ -119,27 +119,27 @@ class Router extends Core
             $routeOptions
         );
 
-        foreach (explode("|", $methods) as $method) {
+        foreach (explode('|', $methods) as $method) {
             static::$routes[$method][] = [
-                "pattern" => $pattern,
-                "handler" => $handler,
-                "name" => $routeOptions["name"] ?? ""
+                'pattern' => $pattern,
+                'handler' => $handler,
+                'name' => $routeOptions['name'] ?? ''
             ];
         }
 
         static::$appRoutes[] = [
-            "methods" => explode("|", $methods),
-            "pattern" => $pattern,
-            "handler" => $handler,
-            "name" => $routeOptions["name"] ?? ""
+            'methods' => explode('|', $methods),
+            'pattern' => $pattern,
+            'handler' => $handler,
+            'name' => $routeOptions['name'] ?? ''
         ];
 
-        if ($routeOptions["name"]) {
-            static::$namedRoutes[$routeOptions["name"]] = $pattern;
+        if ($routeOptions['name']) {
+            static::$namedRoutes[$routeOptions['name']] = $pattern;
         }
 
-        if ($routeOptions["middleware"]) {
-            static::before($methods, $pattern, $routeOptions["middleware"]);
+        if ($routeOptions['middleware']) {
+            static::before($methods, $pattern, $routeOptions['middleware']);
         }
     }
 
@@ -234,7 +234,7 @@ class Router extends Core
         int $status = 302
     ) {
         static::get($from, function () use ($to, $status) {
-            return header("location: $to", true, $status);
+            header("location: $to", true, $status);
         });
     }
 
@@ -256,13 +256,13 @@ class Router extends Core
      */
     public static function resource(string $pattern, string $controller)
     {
-        static::match("GET|HEAD", $pattern, "$controller@index");
-        static::post("$pattern", "$controller@store");
-        static::match("GET|HEAD", "$pattern/create", "$controller@create");
-        static::match("POST|DELETE", "$pattern/{id}/delete", "$controller@destroy");
-        static::match("POST|PUT|PATCH", "$pattern/{id}/edit", "$controller@update");
-        static::match("GET|HEAD", "$pattern/{id}/edit", "$controller@edit");
-        static::match("GET|HEAD", "$pattern/{id}", "$controller@show");
+        static::match('GET|HEAD', $pattern, "$controller@index");
+        static::post($pattern, "$controller@store");
+        static::match('GET|HEAD', "$pattern/create", "$controller@create");
+        static::match('POST|DELETE', "$pattern/{id}/delete", "$controller@destroy");
+        static::match('POST|PUT|PATCH', "$pattern/{id}/edit", "$controller@update");
+        static::match('GET|HEAD', "$pattern/{id}/edit", "$controller@edit");
+        static::match('GET|HEAD', "$pattern/{id}", "$controller@show");
     }
 
     /**
@@ -282,15 +282,15 @@ class Router extends Core
         }
 
         if ($data) {
-            $args = "?";
+            $args = '?';
 
             foreach ($data as $key => $value) {
                 $args .= "$key=$value&";
             }
 
-            $data = rtrim($args, "&");
+            $data = rtrim($args, '&');
         }
 
-        return header("location: $route$data");
+        header("location: $route$data");
     }
 }

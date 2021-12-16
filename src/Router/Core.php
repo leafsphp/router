@@ -27,21 +27,21 @@ class Core
      * Router configuration
      */
     protected static $config = [
-        "mode" => "development",
-        "debug" => true,
-        "app.down" => false,
+        'mode' => 'development',
+        'debug' => true,
+        'app.down' => false,
     ];
 
     /**
-     * "Middleware" to run at specific times
+     * 'Middleware' to run at specific times
      */
     protected static $hooks = [
-        "router.before" => false,
-        "router.before.route" => false,
-        "router.before.dispatch" => false,
-        "router.after.dispatch" => false,
-        "router.after.route" => false,
-        "router.after" => false,
+        'router.before' => false,
+        'router.before.route' => false,
+        'router.before.dispatch' => false,
+        'router.after.dispatch' => false,
+        'router.after.route' => false,
+        'router.after' => false,
     ];
 
     /**
@@ -72,12 +72,12 @@ class Core
     /**
      * Current group base path
      */
-    protected static $groupRoute = "";
+    protected static $groupRoute = '';
 
     /**
      * Default controller namespace
      */
-    protected static $namespace = "";
+    protected static $namespace = '';
 
     /**
      * The Request Method that needs to be handled
@@ -87,7 +87,7 @@ class Core
     /**
      * The Server Base Path for Router Execution
      */
-    protected static $serverBasePath = "";
+    protected static $serverBasePath = '';
 
     /**
      * Configure leaf router
@@ -120,7 +120,7 @@ class Core
      *
      * @return string The given namespace if exists
      */
-    public static function getNamespace()
+    public static function getNamespace(): string
     {
         return static::$namespace;
     }
@@ -128,14 +128,14 @@ class Core
     /**
      * Map handler and options
      */
-    protected static function mapHandler($handler, $options)
+    protected static function mapHandler($handler, $options): array
     {
         if (is_array($handler)) {
             $handlerData = $handler;
 
-            if (isset($handler["handler"])) {
-                $handler = $handler["handler"];
-                unset($handlerData["handler"]);
+            if (isset($handler['handler'])) {
+                $handler = $handler['handler'];
+                unset($handlerData['handler']);
             } else {
                 foreach ($handler as $key => $value) {
                     if (
@@ -150,8 +150,8 @@ class Core
             }
 
             foreach ($handlerData as $key => $value) {
-                if (isset($handlerData[$key])) {
-                    $options[$key] = $handlerData[$key];
+                if (isset($value)) {
+                    $options[$key] = $value;
                 }
             }
         }
@@ -228,7 +228,7 @@ class Core
      *
      * @param \Leaf\Middleware $newMiddleware The middleware to set
      */
-    public static function use($newMiddleware)
+    public static function use(\Leaf\Middleware $newMiddleware)
     {
         if (in_array($newMiddleware, static::$middleware)) {
             $middleware_class = get_class($newMiddleware);
@@ -247,7 +247,7 @@ class Core
      *
      * @return string
      */
-    public static function getBasePath()
+    public static function getBasePath(): string
     {
         if (static::$serverBasePath === "") {
             static::$serverBasePath = implode('/', array_slice(explode('/', $_SERVER['SCRIPT_NAME']), 0, -1)) . '/';
@@ -272,7 +272,7 @@ class Core
      *
      * @return string
      */
-    public static function getCurrentUri()
+    public static function getCurrentUri(): string
     {
         // Get the current Request URI and remove rewrite base path from it (= allows one to run the router in a sub folder)
         $uri = substr(rawurldecode($_SERVER['REQUEST_URI']), strlen(static::getBasePath()));
@@ -291,27 +291,27 @@ class Core
     {
         $config = static::$config;
 
-        $mode = getenv("APP_ENV");
-        $debug = getenv("APP_DEBUG");
-        $appDown = getenv("APP_DOWN");
+        $mode = getenv('APP_ENV');
+        $debug = getenv('APP_DEBUG');
+        $appDown = getenv('APP_DOWN');
 
-        if (class_exists("Leaf\App")) {
+        if (class_exists('Leaf\App')) {
             $config = array_merge($config, [
-                "mode" => $mode ?? \Leaf\Config::get("mode"),
-                "app.down" => $appDown ?? \Leaf\Config::get("app.down"),
-                "debug" => ($debug ?? \Leaf\Config::get("debug")) ?? $mode !== "production",
+                'mode' => $mode ?? \Leaf\Config::get('mode'),
+                'app.down' => $appDown ?? \Leaf\Config::get('app.down'),
+                'debug' => ($debug ?? \Leaf\Config::get('debug')) ?? $mode !== 'production',
             ]);
         }
 
-        if ($config["app.down"] == "true") {
+        if ($config['app.down'] == 'true') {
             if (!static::$downHandler) {
-                if (class_exists("Leaf\App")) {
+                if (class_exists('Leaf\App')) {
                     static::$downHandler = function () {
                         \Leaf\Exception\General::defaultDown();
                     };
                 } else {
                     static::$downHandler = function () {
-                        echo "App is down for maintainance";
+                        echo 'App is down for maintenance';
                     };
                 }
             }
@@ -322,16 +322,16 @@ class Core
         $middleware = static::$middleware;
 
         if (is_callable($callback)) {
-            static::hook("router.after", $callback);
+            static::hook('router.after', $callback);
         }
 
-        static::callHook("router.before");
+        static::callHook('router.before');
 
         if (count($middleware) > 0) {
             $middleware[0]->call();
         }
 
-        static::callHook("router.before.route");
+        static::callHook('router.before.route');
 
         static::$requestedMethod = \Leaf\Http\Request::getMethod();
 
@@ -339,7 +339,7 @@ class Core
             static::handle(static::$routeSpecificMiddleware[static::$requestedMethod]);
         }
 
-        static::callHook("router.before.dispatch");
+        static::callHook('router.before.dispatch');
 
         $numHandled = 0;
 
@@ -350,17 +350,17 @@ class Core
             );
         }
 
-        static::callHook("router.after.dispatch");
+        static::callHook('router.after.dispatch');
 
         if ($numHandled === 0) {
             if (!static::$notFoundHandler) {
-                if (class_exists("Leaf\App")) {
+                if (class_exists('Leaf\App')) {
                     static::$notFoundHandler = function () {
                         \Leaf\Exception\General::default404();
                     };
                 } else {
                     static::$notFoundHandler = function () {
-                        echo "Route not found";
+                        echo 'Route not found';
                     };
                 }
             }
@@ -373,22 +373,22 @@ class Core
             ob_end_clean();
         }
 
-        static::callHook("router.after.route");
+        static::callHook('router.after.route');
 
         restore_error_handler();
 
-        return static::callHook("router.after") ?? ($numHandled !== 0);
+        return static::callHook('router.after') ?? ($numHandled !== 0);
     }
 
     /**
-     * Handle a a set of routes: if a match is found, execute the relating handling function.
+     * Handle a set of routes: if a match is found, execute the relating handling function.
      *
      * @param array $routes Collection of route patterns and their handling functions
      * @param bool $quitAfterRun Does the handle function need to quit after one route was matched?
      *
      * @return int The number of routes handled
      */
-    private static function handle($routes, $quitAfterRun = false)
+    private static function handle(array $routes, bool $quitAfterRun = false): int
     {
         $numHandled = 0;
         $uri = static::getCurrentUri();
@@ -449,7 +449,7 @@ class Core
             // First check if is a static method, directly trying to invoke it.
             // If isn't a valid static method, we will try as a normal method invocation.
             if (call_user_func_array([new $controller(), $method], $params) === false) {
-                // Try to call the method as an non-static method. (the if does nothing, only avoids the notice)
+                // Try to call the method as a non-static method. (the if does nothing, only avoids the notice)
                 if (forward_static_call_array([$controller, $method], $params) === false);
             }
         }
