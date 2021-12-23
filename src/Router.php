@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Leaf;
 
 use Leaf\Router\Core;
@@ -53,7 +55,8 @@ class Router extends Core
             'namespace' => null,
         ];
 
-        list($handler, $groupOptions) = static::mapHandler($handler,
+        list($handler, $groupOptions) = static::mapHandler(
+            $handler,
             $groupOptions
         );
 
@@ -110,12 +113,13 @@ class Router extends Core
                 static::$namespace = $routeOptions['namespace'];
             }
 
-            $handler = str_replace('\\\\', '\\', static::$namespace . '\\$handler');
+            $handler = str_replace('\\\\', '\\', static::$namespace . "\\$handler");
 
             static::$namespace = $namespace;
         }
 
-        list($handler, $routeOptions) = static::mapHandler($handler,
+        list($handler, $routeOptions) = static::mapHandler(
+            $handler,
             $routeOptions
         );
 
@@ -151,7 +155,8 @@ class Router extends Core
      */
     public static function all(string $pattern, $handler)
     {
-        static::match('GET|POST|PUT|DELETE|OPTIONS|PATCH|HEAD',
+        static::match(
+            'GET|POST|PUT|DELETE|OPTIONS|PATCH|HEAD',
             $pattern,
             $handler
         );
@@ -230,11 +235,13 @@ class Router extends Core
      * @param string $to The url to redirect to
      * @param int $status The http status code for redirect
      */
-    public static function redirect(string $from, string $to,
+    public static function redirect(
+        string $from,
+        string $to,
         int $status = 302
     ) {
         static::get($from, function () use ($to, $status) {
-            header("location: $to", true, $status);
+            return header("location: $to", true, $status);
         });
     }
 
@@ -275,7 +282,7 @@ class Router extends Core
     {
         if (is_array($route)) {
             if (!isset(static::$namedRoutes[$route[0]])) {
-                trigger_error("Route named " . $route[0] . " not found");
+                trigger_error('Route named ' . $route[0] . ' not found');
             }
 
             $route = static::$namedRoutes[$route[0]];
@@ -291,6 +298,6 @@ class Router extends Core
             $data = rtrim($args, '&');
         }
 
-        header("location: $route$data");
+        return header("location: $route$data");
     }
 }

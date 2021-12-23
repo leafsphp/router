@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Leaf\Router;
 
 /**
@@ -140,7 +142,7 @@ class Core
                 foreach ($handler as $key => $value) {
                     if (
                         (is_numeric($key) && is_callable($value))
-                        || is_numeric($key) && is_string($value) && strpos($value, "@")
+                        || is_numeric($key) && is_string($value) && strpos($value, '@')
                     ) {
                         $handler = $handler[$key];
                         unset($handlerData[$key]);
@@ -203,7 +205,7 @@ class Core
     {
         if (is_array($path)) {
             if (!isset(static::$namedRoutes[$path[0]])) {
-                trigger_error("Route named " . $path[0] . " not found");
+                trigger_error('Route named ' . $path[0] . ' not found');
             }
 
             $path = static::$namedRoutes[$path[0]];
@@ -214,8 +216,8 @@ class Core
 
         foreach (explode('|', $methods) as $method) {
             static::$routeSpecificMiddleware[$method][] = [
-                "pattern" => $path,
-                "handler" => $handler,
+                'pattern' => $path,
+                'handler' => $handler,
             ];
         }
     }
@@ -228,7 +230,7 @@ class Core
      *
      * @param \Leaf\Middleware $newMiddleware The middleware to set
      */
-    public static function use(\Leaf\Middleware $newMiddleware)
+    public static function use($newMiddleware)
     {
         if (in_array($newMiddleware, static::$middleware)) {
             $middleware_class = get_class($newMiddleware);
@@ -249,7 +251,7 @@ class Core
      */
     public static function getBasePath(): string
     {
-        if (static::$serverBasePath === "") {
+        if (static::$serverBasePath === '') {
             static::$serverBasePath = implode('/', array_slice(explode('/', $_SERVER['SCRIPT_NAME']), 0, -1)) . '/';
         }
 
@@ -291,9 +293,9 @@ class Core
     {
         $config = static::$config;
 
-        $mode = getenv('APP_ENV');
-        $debug = getenv('APP_DEBUG');
-        $appDown = getenv('APP_DOWN');
+        $mode = $_ENV['APP_ENV'] ?? null;
+        $debug = $_ENV['APP_DEBUG'] ?? null;
+        $appDown = $_ENV['APP_DOWN'] ?? null;
 
         if (class_exists('Leaf\App')) {
             $config = array_merge($config, [
@@ -328,7 +330,11 @@ class Core
         static::callHook('router.before');
 
         if (count($middleware) > 0) {
-            $middleware[0]->call();
+            if (is_string($middleware[0])) {
+                (new $middleware[0])->call();
+            } else {
+                $middleware[0]->call();
+            }
         }
 
         static::callHook('router.before.route');
