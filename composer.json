@@ -28,5 +28,8 @@
 	"prefer-stable": true,
     "require": {
         "leafs/http": "^1.0"
+    },
+    "require-dev": {
+        "pestphp/pest": "^1.21"
     }
 }
