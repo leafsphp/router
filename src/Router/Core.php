@@ -100,6 +100,23 @@ class Core
     }
 
     /**
+     * Force call the Leaf URL handler
+     * 
+     * @param string $method The method to call
+     * @param string $url The uri to force
+     */
+    public static function handleUrl(string $method, string $url)
+    {
+        if (isset(static::$routes[$method])) {
+            static::handle(
+                static::$routes[$method],
+                true,
+                $url
+            );
+        }
+    }
+
+    /**
      * Get all routes registered in your leaf app
      */
     public static function routes(): array
@@ -392,13 +409,14 @@ class Core
      *
      * @param array $routes Collection of route patterns and their handling functions
      * @param bool $quitAfterRun Does the handle function need to quit after one route was matched?
+     * @param string|null $uri The URI to call (automatically set if nothing is passed).
      *
      * @return int The number of routes handled
      */
-    private static function handle(array $routes, bool $quitAfterRun = false): int
+    private static function handle(array $routes, bool $quitAfterRun = false, ?string $uri = null): int
     {
         $numHandled = 0;
-        $uri = static::getCurrentUri();
+        $uri = $uri ?? static::getCurrentUri();
 
         foreach ($routes as $route) {
             // Replace all curly braces matches {} into word patterns (like Laravel)
