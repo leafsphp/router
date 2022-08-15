@@ -304,6 +304,19 @@ class Core
     }
 
     /**
+     * Get route info of the current route
+     * 
+     * @return array The route info array
+     */
+    public static function getRoute(): array
+    {
+        return [
+            'path' => static::getCurrentUri(),
+            'method' => \Leaf\Http\Request::getMethod(),
+        ];
+    }
+
+    /**
      * Dispatch your application routes
      */
     public static function run(?callable $callback = null)
