@@ -173,6 +173,22 @@ And to all our existing cash/code contributors, we love you all ❤️
       </a>
     </td>
 	</tr>
+  <tr>
+    <td align="center">
+			<a href="https://github.com/doc-han">
+				<img src="https://avatars.githubusercontent.com/u/35382021?v=4" width="120px" alt=""/>
+				<br />
+				<sub><b>Farhan Yahaya</b></sub>
+			</a>
+		</td>
+    <td align="center">
+			<a href="https://www.lucaschaplain.design/">
+				<img src="https://images.opencollective.com/sptaule/aa5f956/avatar/256.png" width="120px" alt=""/>
+				<br />
+				<sub><b>Lucas Chaplain</b></sub>
+			</a>
+		</td>
+  </tr>
 </table>
 
 ## 🤯 Links/Projects
