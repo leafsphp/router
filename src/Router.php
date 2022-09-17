@@ -273,6 +273,29 @@ class Router extends Core
     }
 
     /**
+     * Create a resource route for using controllers without the create and edit actions.
+     * 
+     * This creates a routes that implement CRUD functionality in a controller
+     * `/posts` creates:
+     * - `/posts` - GET | HEAD - Controller@index
+     * - `/posts` - POST - Controller@store
+     * - `/posts/{id}` - GET | HEAD - Controller@show
+     * - `/posts/{id}/edit` - POST | PUT | PATCH - Controller@update
+     * - `/posts/{id}/delete` - POST | DELETE - Controller@destroy
+     * 
+     * @param string $pattern The base route to use eg: /post
+     * @param string $controller to handle route eg: PostController
+     */
+    public static function apiResource(string $pattern, string $controller)
+    {
+        static::match('GET|HEAD', $pattern, "$controller@index");
+        static::post($pattern, "$controller@store");
+        static::match('POST|DELETE', "$pattern/{id}/delete", "$controller@destroy");
+        static::match('POST|PUT|PATCH', "$pattern/{id}/edit", "$controller@update");
+        static::match('GET|HEAD', "$pattern/{id}", "$controller@show");
+    }
+
+    /**
      * Redirect to another route
      * 
      * @param string|array $route The route to redirect to
