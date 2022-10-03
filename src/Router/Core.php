@@ -8,7 +8,7 @@ namespace Leaf\Router;
  * Leaf Router [Core]
  * ---------------
  * Core module for leaf router
- * 
+ *
  * @author Michael Darko
  * @since 3.0
  * @version 1.0
@@ -101,7 +101,7 @@ class Core
 
     /**
      * Force call the Leaf URL handler
-     * 
+     *
      * @param string $method The method to call
      * @param string $url The uri to force
      */
@@ -126,7 +126,7 @@ class Core
 
     /**
      * Set a global namespace for your handlers
-     * 
+     *
      * @param string $namespace The global namespace to set
      */
     public static function setNamespace(string $namespace)
@@ -180,7 +180,7 @@ class Core
 
     /**
      * Add a router hook
-     * 
+     *
      * Available hooks
      * - router.before
      * - router.before.route
@@ -188,7 +188,7 @@ class Core
      * - router.after.dispatch
      * - router.after.route
      * - router.after
-     * 
+     *
      * @param string $name The hook to set
      * @param callable|null $handler The hook handler
      */
@@ -203,7 +203,7 @@ class Core
 
     /**
      * Call a router hook
-     * 
+     *
      * @param string $name The hook to call
      */
     private static function callHook(string $name)
@@ -213,7 +213,7 @@ class Core
 
     /**
      * Add a route specific middleware
-     * 
+     *
      * @param string $methods Allowed methods, separated by |
      * @param string|array $path The path/route to apply middleware on
      * @param callable $handler The middleware handler
@@ -305,7 +305,7 @@ class Core
 
     /**
      * Get route info of the current route
-     * 
+     *
      * @return array The route info array
      */
     public static function getRoute(): array
@@ -323,20 +323,15 @@ class Core
     {
         $config = static::$config;
 
-        $appenv = getenv();
-        $mode = $appenv['APP_ENV'] ?? null;
-        $debug = $appenv['APP_DEBUG'] ?? null;
-        $appDown = $appenv['APP_DOWN'] ?? null;
-
         if (class_exists('Leaf\App')) {
             $config = array_merge($config, [
-                'mode' => $mode !== null ? $mode : \Leaf\Config::get('mode'),
-                'app.down' => $appDown !== null ? $appDown : \Leaf\Config::get('app.down'),
-                'debug' => (($debug !== null) ? $debug : \Leaf\Config::get('debug')) ?? $mode !== 'production',
+                'mode' => \Leaf\Config::get('mode'),
+                'app.down' => \Leaf\Anchor::toBool(\Leaf\Config::get('app.down')),
+                'debug' => \Leaf\Anchor::toBool(\Leaf\Config::get('debug')) ?? \Leaf\Config::get('mode') !== 'production',
             ]);
         }
 
-        if ($config['app.down'] == 'true') {
+        if ($config['app.down'] === true) {
             if (!static::$downHandler) {
                 if (class_exists('Leaf\App')) {
                     static::$downHandler = function () {
