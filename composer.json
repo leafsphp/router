@@ -27,7 +27,8 @@
     "minimum-stability": "dev",
 	"prefer-stable": true,
     "require": {
-        "leafs/http": "*"
+        "leafs/http": "*",
+        "leafs/anchor": "*"
     },
     "require-dev": {
         "pestphp/pest": "^1.21"
