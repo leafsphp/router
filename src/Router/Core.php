@@ -326,8 +326,8 @@ class Core
         if (class_exists('Leaf\App')) {
             $config = array_merge($config, [
                 'mode' => \Leaf\Config::get('mode'),
-                'app.down' => \Leaf\Anchor::toBool(\Leaf\Config::get('app.down')),
-                'debug' => \Leaf\Anchor::toBool(\Leaf\Config::get('debug')) ?? \Leaf\Config::get('mode') !== 'production',
+                'app.down' => \Leaf\Anchor::toBool(\Leaf\Config::get('app.down')) ?? false,
+                'debug' => \Leaf\Anchor::toBool(\Leaf\Config::get('debug')) ?? false,
             ]);
         }
 
