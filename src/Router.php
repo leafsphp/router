@@ -97,6 +97,7 @@ class Router extends Core
      */
     public static function match(string $methods, string $pattern, $handler)
     {
+        $rawPattern = $pattern;
         $pattern = static::$groupRoute . '/' . trim($pattern, '/');
         $pattern = static::$groupRoute ? rtrim($pattern, '/') : $pattern;
 
@@ -143,7 +144,7 @@ class Router extends Core
         }
 
         if ($routeOptions['middleware']) {
-            static::before($methods, $pattern, $routeOptions['middleware']);
+            static::before($methods, $rawPattern, $routeOptions['middleware']);
         }
     }
 
