@@ -310,10 +310,23 @@ class Core
      */
     public static function getRoute(): array
     {
-        return [
-            'path' => static::getCurrentUri(),
+        $routeConfig = [];
+
+        foreach (static::$appRoutes as $route) {
+            if ($route['pattern'] === static::getCurrentUri()) {
+                $route['path'] = $route['pattern'];
+
+                unset($route['pattern']);
+                unset($route['methods']);
+
+                $routeConfig = $route;
+                break;
+            }
+        }
+
+        return array_merge($routeConfig, [
             'method' => \Leaf\Http\Request::getMethod(),
-        ];
+        ]);
     }
 
     /**
