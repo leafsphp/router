@@ -36,3 +36,25 @@ test('set down', function () {
 	// clean up
 	$router->configure(['app.down' => false]);
 });
+
+test('get route data', function () {
+	$_SERVER['REQUEST_METHOD'] = 'GET';
+	$_SERVER['REQUEST_URI'] = '/thispath';
+
+	$lr = new Router;
+
+	$lr->get('/thispath', ['name' => 'thisroutename', function () use($lr) {
+		echo json_encode($lr->getRoute());
+	}]);
+
+	ob_start();
+	$lr->run();
+
+	$data = json_decode(ob_get_contents(), true);
+
+	expect($data['path'])->toBe('/thispath');
+	expect($data['name'])->toBe('thisroutename');
+	expect($data['method'])->toBe('GET');
+
+	ob_end_clean();
+});
