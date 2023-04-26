@@ -82,3 +82,23 @@ test('route groups with different namespace', function () {
         'App\\\\Controllers\\\\ExampleController'
     ))->toBeTruthy();
 });
+
+test('route groups support nested groups', function () {
+    $_SERVER['REQUEST_URI'] = '/group/nested/route';
+
+    $rx = new Router;
+
+    TGroup::$val = true;
+
+    $rx->mount('/group', function () use ($rx) {
+        $rx->mount('/nested', function () use ($rx) {
+            $rx->get('/route', function () use ($rx) {
+                TGroup::$val = false;
+            });
+        });
+    });
+
+    $rx->run();
+
+    expect(TGroup::$val)->toBe(false);
+});
