@@ -30,7 +30,6 @@ class Core
      */
     protected static $config = [
         'mode' => 'development',
-        'debug' => true,
         'app.down' => false,
     ];
 
@@ -50,6 +49,11 @@ class Core
      * Leaf app middleware
      */
     protected static $middleware = [];
+
+    /**
+     * Named middleware
+     */
+    protected static $namedMiddleware = [];
 
     /**
      * Route specific middleware
@@ -151,6 +155,10 @@ class Core
     {
         if (is_array($handler)) {
             $handlerData = $handler;
+
+            if (is_string($handler['middleware'] ?? null)) {
+                $handlerData['middleware'] = static::$namedMiddleware[$handler['middleware']] ?? null;
+            }
 
             if (isset($handler['handler'])) {
                 $handler = $handler['handler'];
@@ -262,6 +270,17 @@ class Core
     }
 
     /**
+     * Register a middleware in your Leaf application by name
+     * 
+     * @param string $name The name of the middleware
+     * @param callable $middleware The middleware to register
+     */
+    public function registerMiddleware(string $name, callable $middleware)
+    {
+        static::$namedMiddleware[$name] = $middleware;
+    }
+
+    /**
      * Return server base Path, and define it if isn't defined.
      *
      * @return string
@@ -338,9 +357,8 @@ class Core
 
         if (class_exists('Leaf\App')) {
             $config = array_merge($config, [
-                'mode' => \Leaf\Config::get('mode'),
+                'mode' => \Leaf\Config::get('mode') ?? 'development',
                 'app.down' => \Leaf\Anchor::toBool(\Leaf\Config::get('app.down')) ?? false,
-                'debug' => \Leaf\Anchor::toBool(\Leaf\Config::get('debug')) ?? false,
             ]);
         }
 
