@@ -124,3 +124,23 @@ test('route groups support multiple nested groups', function () {
     expect($rx2Routes[count($rx2Routes) - 2]['pattern'] ?? null)->toBe('/group/nested/route');
     expect($rx2Routes[count($rx2Routes) - 1]['pattern'] ?? null)->toBe('/group/nested2/route');
 });
+
+test('dynamic nested route groups', function () {
+    $_SERVER['REQUEST_URI'] = '/hiddenGroup/1/route';
+
+    $rx = new Router;
+
+    TGroup::$val = true;
+
+    $rx->mount('/hiddenGroup', function () use ($rx) {
+        $rx->mount('/(\d+)', function () use ($rx) {
+            $rx->get('/route', function () use ($rx) {
+                TGroup::$val = 'Hidden response';
+            });
+        });
+    });
+
+    $rx->run();
+
+    expect(TGroup::$val)->toBe('Hidden response');
+});
