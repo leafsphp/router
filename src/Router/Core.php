@@ -30,6 +30,7 @@ class Core
      */
     protected static $config = [
         'mode' => 'development',
+        'debug' => true,
         'app.down' => false,
     ];
 
@@ -359,6 +360,7 @@ class Core
             $config = array_merge($config, [
                 'mode' => \Leaf\Config::get('mode') ?? 'development',
                 'app.down' => \Leaf\Anchor::toBool(\Leaf\Config::get('app.down')) ?? false,
+                'debug' => \Leaf\Anchor::toBool(\Leaf\Config::get('debug')) ?? false,
             ]);
         }
 
