@@ -121,5 +121,6 @@ test('route groups support multiple nested groups', function () {
     $rx2Routes = $rx2->routes();
 
     expect($rx2Routes)->toBeArray();
+    expect($rx2Routes[count($rx2Routes) - 2]['pattern'] ?? null)->toBe('/group/nested/route');
     expect($rx2Routes[count($rx2Routes) - 1]['pattern'] ?? null)->toBe('/group/nested2/route');
 });
