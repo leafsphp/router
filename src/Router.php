@@ -61,6 +61,7 @@ class Router extends Core
         );
 
         $namespace = static::$namespace;
+        $initialGroupRoute = static::$groupRoute;
 
         if ($groupOptions['namespace']) {
             static::$namespace = $groupOptions['namespace'];
@@ -71,7 +72,7 @@ class Router extends Core
         call_user_func($handler);
 
         static::$namespace = $namespace;
-        static::$groupRoute = '';
+        static::$groupRoute = $initialGroupRoute;
     }
 
     /**
