@@ -102,3 +102,24 @@ test('route groups support nested groups', function () {
 
     expect(TGroup::$val)->toBe(false);
 });
+
+test('route groups support multiple nested groups', function () {
+    $_SERVER['REQUEST_URI'] = '/group/nested/route';
+
+    $rx2 = new Router;
+
+    $rx2->mount('/group', function () use ($rx2) {
+        $rx2->mount('/nested', function () use ($rx2) {
+            $rx2->get('/route', function () {});
+        });
+        
+        $rx2->mount('/nested2', function () use ($rx2) {
+            $rx2->get('/route', function () {});
+        });
+    });
+
+    $rx2Routes = $rx2->routes();
+
+    expect($rx2Routes)->toBeArray();
+    expect($rx2Routes[count($rx2Routes) - 1]['pattern'] ?? null)->toBe('/group/nested2/route');
+});
