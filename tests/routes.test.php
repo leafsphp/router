@@ -108,3 +108,18 @@ test('delete route', function () {
 
     expect(TRoute::$val)->toBe(false);
 });
+
+test('route should return url by route name', function () {
+    $router = new Router;
+    $router->match('GET', '/route/url', ['handler', 'name' => 'route-name']);
+
+    $routeUrl = $router->route('route-name');
+
+    expect($routeUrl)->toBe('/route/url');
+});
+
+test('route should throw exception if no route found for name', function () {
+    $router = new Router;
+
+    expect(fn() => $router->route('non-existent-route-name'))->toThrow(Exception::class);
+});

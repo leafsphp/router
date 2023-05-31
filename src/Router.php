@@ -324,4 +324,20 @@ class Router extends Core
 
         return header("location: $route$data");
     }
+
+    /**
+     * Get route url by defined route name
+     *
+     * @param string $routeName
+     *
+     * @return string
+     */
+    public static function route(string $routeName): string
+    {
+        if (!isset(static::$namedRoutes[$routeName])) {
+            trigger_error('Route named ' . $routeName . ' not found');
+        }
+
+        return static::$namedRoutes[$routeName];
+    }
 }
