@@ -143,6 +143,7 @@ class Router extends Core
             static::$namedRoutes[$routeOptions['name']] = $pattern;
         }
 
+
         if ($routeOptions['middleware']) {
             static::before($methods, $rawPattern, $routeOptions['middleware']);
         }

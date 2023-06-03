@@ -171,6 +171,19 @@ class Core
                         || is_numeric($key) && is_string($value) && strpos($value, '@')
                     ) {
                         $handler = $handler[$key];
+
+                        if (is_string($handler)) {
+                            $namespace = static::$namespace;
+
+                            if ($options['namespace']) {
+                                static::$namespace = $options['namespace'];
+                            }
+
+                            $handler = str_replace('\\\\', '\\', static::$namespace . "\\$handler");
+
+                            static::$namespace = $namespace;
+                        }
+
                         unset($handlerData[$key]);
                         break;
                     }
