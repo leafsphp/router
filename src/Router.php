@@ -107,6 +107,11 @@ class Router extends Core
             'namespace' => null,
         ];
 
+        list($handler, $routeOptions) = static::mapHandler(
+            $handler,
+            $routeOptions
+        );
+
         if (is_string($handler)) {
             $namespace = static::$namespace;
 
@@ -118,11 +123,6 @@ class Router extends Core
 
             static::$namespace = $namespace;
         }
-
-        list($handler, $routeOptions) = static::mapHandler(
-            $handler,
-            $routeOptions
-        );
 
         foreach (explode('|', $methods) as $method) {
             static::$routes[$method][] = [
