@@ -68,7 +68,7 @@ class Router extends Core
             static::$namespace = $groupOptions['namespace'];
         }
 
-        static::$groupRoute = static::$groupRoute . (strpos($path, '/') !== 0 ? "/$path"  : $path);
+        static::$groupRoute = static::$groupRoute . ($path === '/' ? '' : (strpos($path, '/') !== 0 ? "/$path"  : $path));
 
         if (isset($groupOptions['middleware'])) {
             static::$routeMiddleware = $groupOptions['middleware'];
