@@ -77,6 +77,11 @@ class Core
     protected static $namedRoutes = [];
 
     /**
+     * Route based middleware
+     */
+    protected static $routeMiddleware = [];
+
+    /**
      * Current group base path
      */
     protected static $groupRoute = '';

@@ -62,6 +62,7 @@ class Router extends Core
 
         $namespace = static::$namespace;
         $initialGroupRoute = static::$groupRoute;
+        $initialGroupMiddleware = static::$routeMiddleware;
 
         if ($groupOptions['namespace']) {
             static::$namespace = $groupOptions['namespace'];
@@ -69,8 +70,13 @@ class Router extends Core
 
         static::$groupRoute = static::$groupRoute . (strpos($path, '/') !== 0 ? "/$path"  : $path);
 
+        if (isset($groupOptions['middleware'])) {
+            static::$routeMiddleware = $groupOptions['middleware'];
+        }
+
         call_user_func($handler);
 
+        static::$routeMiddleware = $initialGroupMiddleware;
         static::$namespace = $namespace;
         static::$groupRoute = $initialGroupRoute;
     }
@@ -143,9 +149,8 @@ class Router extends Core
             static::$namedRoutes[$routeOptions['name']] = $pattern;
         }
 
-
-        if ($routeOptions['middleware']) {
-            static::before($methods, $rawPattern, $routeOptions['middleware']);
+        if ($routeOptions['middleware'] || !empty(static::$routeMiddleware)) {
+            static::before($methods, $rawPattern, $routeOptions['middleware'] ?? static::$routeMiddleware);
         }
     }
 
