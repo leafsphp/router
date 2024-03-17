@@ -344,7 +344,7 @@ class Core
             $route = array_merge($route, [
                 'pattern' => $currentRoute[0]['route']['pattern'],
                 'path' => static::getCurrentUri(),
-                'method' => \Leaf\Http\Request::getMethod(),
+                'method' =>  $_SERVER['REQUEST_METHOD'],
                 'name' => $currentRoute[0]['route']['name'] ?? null,
                 'handler' => $currentRoute[0]['route']['handler'],
                 'params' => $currentRoute[0]['params'] ?? [],
@@ -412,27 +412,7 @@ class Core
     {
         $config = static::$config;
 
-        if (class_exists('Leaf\App')) {
-            $config = array_merge($config, [
-                'mode' => \Leaf\Config::get('mode') ?? 'development',
-                'app.down' => \Leaf\Anchor::toBool(\Leaf\Config::get('app.down')) ?? false,
-                'debug' => \Leaf\Anchor::toBool(\Leaf\Config::get('debug')) ?? false,
-            ]);
-        }
-
         if ($config['app.down'] === true) {
-            if (!static::$downHandler) {
-                if (class_exists('Leaf\App')) {
-                    static::$downHandler = function () {
-                        \Leaf\Exception\General::defaultDown();
-                    };
-                } else {
-                    static::$downHandler = function () {
-                        echo 'App is down for maintenance';
-                    };
-                }
-            }
-
             return static::invoke(static::$downHandler);
         }
 
@@ -454,7 +434,7 @@ class Core
 
         static::callHook('router.before.route');
 
-        static::$requestedMethod = \Leaf\Http\Request::getMethod();
+        static::$requestedMethod =  $_SERVER['REQUEST_METHOD'];
 
         if (isset(static::$routeSpecificMiddleware[static::$requestedMethod])) {
             static::handle(static::$routeSpecificMiddleware[static::$requestedMethod]);
