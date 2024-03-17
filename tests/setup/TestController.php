@@ -2,10 +2,13 @@
 
 namespace Controllers;
 
+use TRoute;
+
 class TestController
 {
-    public function puts(string $data)
+    public function puts()
     {
-        return $data;
+        TRoute::$val = true;
+        echo 'example controller';
     }
 };

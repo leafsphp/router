@@ -31,7 +31,7 @@
         "leafs/anchor": "*"
     },
     "require-dev": {
-        "pestphp/pest": "^1.21"
+        "pestphp/pest": "^2.34"
     },
     "config": {
         "allow-plugins": {

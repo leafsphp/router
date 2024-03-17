@@ -534,19 +534,33 @@ class Core
                 $handler,
                 $params
             );
+
+            return;
         }
+
+        $controller = null;
+        $method = '';
+        
         // If not, check the existence of special parameters
-        elseif (stripos($handler, '@') !== false) {
-            list($controller, $method) = explode('@', $handler);
+        if (!is_array($handler) && is_string($handler) && stripos($handler, '@') !== false) {
+            [$controller, $method] = explode('@', $handler);
+        }
+        
 
-            if (!class_exists($controller)) {
-                trigger_error("$controller not found. Cross-check the namespace if you're sure the file exists");
-            }
+        if (is_array($handler)) {
+            [$controller, $method] = $handler;
+        }
 
-            if (!method_exists($controller, $method)) {
-                trigger_error("$method method not found in $controller");
-            }
 
+        if (!class_exists($controller)) {
+            trigger_error("$controller not found. Cross-check the namespace if you're sure the file exists");
+        }
+
+        if (!method_exists($controller, $method)) {
+            trigger_error("$method method not found in $controller");
+        }
+
+        if ($controller && $method) {
             if (static::$container && method_exists(static::$container, 'call')) {
                 static::$container->call([$controller, $method], $params);
             } else {
@@ -557,8 +571,9 @@ class Core
                     if (forward_static_call_array([$controller, $method], $params) === false);
                 }
             }
-            
         }
+        
+            
     }
 
     public static function setContainer($container) {

@@ -2,6 +2,11 @@
 
 use Leaf\Router;
 
+class TCore
+{
+    static $val = true;
+}
+
 test('static call', function () {
 	expect(Router::routes())->toBeArray();
 });
@@ -103,4 +108,23 @@ test('get route data + dynamic routes', function () {
 	expect($data['method'])->toBe('GET');
 
 	ob_end_clean();
+});
+
+
+test('using container to call handler', function() {
+	$_SERVER['REQUEST_METHOD'] = 'GET';
+    $_SERVER['REQUEST_URI'] = '/';
+
+    include_once __DIR__.'/setup/ExampleController.php';
+	include_once __DIR__.'/setup/ExampleContainer.php';
+
+	$container = new App\ExampleContainer();
+    TCore::$val = false;
+
+    $router = new Router;
+	$router::setContainer($container);
+    $router->match('GET', '/', [App\Controllers\ExampleController::class, 'puts']);
+    $router->run();
+
+    expect(TCore::$val)->toBe(true);
 });

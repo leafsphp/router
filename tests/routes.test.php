@@ -7,6 +7,22 @@ class TRoute
     static $val = true;
 }
 
+test('router gets array in handler', function () {
+    $_SERVER['REQUEST_METHOD'] = 'GET';
+    $_SERVER['REQUEST_URI'] = '/';
+    
+    TRoute::$val = false;
+    
+    include_once __DIR__.'/setup/TestController.php';
+
+    $router = new Router;
+    $router::setContainer(null);
+    $router->match('GET', '/', [Controllers\TestController::class, 'puts']);
+    $router->run();
+
+    expect(TRoute::$val)->toBe(true);
+});
+
 test('router match', function () {
     $_SERVER['REQUEST_METHOD'] = 'PUT';
     $_SERVER['REQUEST_URI'] = '/put';
