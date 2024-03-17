@@ -101,6 +101,8 @@ class Core
      */
     protected static $serverBasePath = '';
 
+    private static $container = null;
+
     /**
      * Configure leaf router
      */
@@ -545,12 +547,21 @@ class Core
                 trigger_error("$method method not found in $controller");
             }
 
-            // First check if is a static method, directly trying to invoke it.
-            // If isn't a valid static method, we will try as a normal method invocation.
-            if (call_user_func_array([new $controller(), $method], $params) === false) {
-                // Try to call the method as a non-static method. (the if does nothing, only avoids the notice)
-                if (forward_static_call_array([$controller, $method], $params) === false);
+            if (static::$container && method_exists(static::$container, 'call')) {
+                static::$container->call([$controller, $method], $params);
+            } else {
+                // First check if is a static method, directly trying to invoke it.
+                // If isn't a valid static method, we will try as a normal method invocation.
+                if (call_user_func_array([new $controller(), $method], $params) === false) {
+                    // Try to call the method as a non-static method. (the if does nothing, only avoids the notice)
+                    if (forward_static_call_array([$controller, $method], $params) === false);
+                }
             }
+            
         }
+    }
+
+    public static function setContainer($container) {
+        static::$container = $container;
     }
 }
